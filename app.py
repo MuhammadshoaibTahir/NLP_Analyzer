@@ -150,8 +150,6 @@ def analyze():
 
     if premium:
         readability = {
-            'flesch_reading_ease': textstat.flesch_reading_ease(text),
-            'smog_index': textstat.smog_index(text)
         }
 
         blob = TextBlob(text)
