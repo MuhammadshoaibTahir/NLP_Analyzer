@@ -3,7 +3,6 @@ from markupsafe import Markup
 from matplotlib import pyplot as plt
 import matplotlib
 matplotlib.use('Agg')  # For thread-safe rendering in Flask
-
 import spacy
 import stanza
 import re
