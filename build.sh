@@ -1,3 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
+pip install --upgrade pip
 pip install -r requirements.txt
-python -m textblob.download_corpora
+python -m spacy download en_core_web_sm
