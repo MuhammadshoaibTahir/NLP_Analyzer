@@ -13,7 +13,6 @@ from langdetect import detect
 from collections import Counter
 from sklearn.decomposition import LatentDirichletAllocation
 from sklearn.feature_extraction.text import CountVectorizer
-import textstat
 from spacy import displacy
 import seaborn as sns
 
