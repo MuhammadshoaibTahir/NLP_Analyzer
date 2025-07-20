@@ -1,7 +1,9 @@
 services:
   - type: web
-    name: english-nlp-tool
+    name: nlp-analyzer
     env: python
-    buildCommand: ./build.sh
-    startCommand: gunicorn app:app
-    pythonVersion: 3.10.12
+    buildCommand: "./build.sh"
+    startCommand: "python app.py"
+    envVars:
+      - key: PORT
+        value: 10000
