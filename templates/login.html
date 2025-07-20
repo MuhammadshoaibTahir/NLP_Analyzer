@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - NLP Analyzer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      background: linear-gradient(to right, #e3f2fd, #f8f9fa);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .login-card {
+      background-color: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      padding: 30px 25px;
+      width: 100%;
+      max-width: 420px;
+      animation: fadeIn 0.6s ease-in-out;
+    }
+
+    .login-header {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #0d6efd;
+    }
+
+    .form-label {
+      font-weight: 600;
+    }
+
+    .form-control:focus {
+      border-color: #0d6efd;
+      box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.2);
+    }
+
+    .btn-primary {
+      font-weight: 600;
+      font-size: 1rem;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .text-small {
+      font-size: 0.9rem;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+
+<main class="login-card" role="main" aria-labelledby="login-title">
+  <h1 id="login-title" class="login-header text-center mb-4">🔐 Login to NLP Analyzer</h1>
+
+  <!-- Flash Messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <!-- Login Form -->
+  <form action="/login" method="POST" aria-describedby="login-form-description">
+    <div class="mb-3">
+      <label for="email" class="form-label">📧 Email</label>
+      <input type="email" name="email" id="email" class="form-control" required placeholder="you@example.com" aria-required="true">
+    </div>
+
+    <div class="mb-3">
+      <label for="license_key" class="form-label">🔑 License Key <span class="text-muted">(optional)</span></label>
+      <input type="text" name="license_key" id="license_key" class="form-control" placeholder="Enter license key if premium">
+    </div>
+
+    <button type="submit" class="btn btn-primary w-100 mt-2">Login</button>
+  </form>
+
+  <div class="text-center mt-4 text-small">
+    <p>Don't have an account? <a href="/register" class="fw-semibold text-decoration-none">Register here</a></p>
+    <a href="/" class="text-secondary text-decoration-none">← Back to Home</a>
+  </div>
+</main>
+
+<!-- Bootstrap Bundle JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

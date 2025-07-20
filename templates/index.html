@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NLP Analyzer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Bootstrap 5 & Font Awesome -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: #f5f7fa;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding-top: 80px;
+    }
+
+    header.developer-bar {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      height: 60px;
+      background: linear-gradient(90deg, #6a11cb, #2575fc);
+      z-index: 1000;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .developer-bar img {
+      object-fit: cover;
+      border: 2px solid #fff;
+    }
+
+    .glow-text {
+      color: #fff;
+      text-shadow: 0 0 5px #00ffcc, 0 0 10px #00ffcc;
+      font-weight: 500;
+    }
+
+    .text-white:hover {
+      color: #ffc107 !important;
+    }
+
+    textarea {
+      resize: vertical;
+      font-family: monospace;
+    }
+
+    .premium-badge {
+      background-color: gold;
+      color: #333;
+      font-weight: bold;
+      font-size: 0.8rem;
+      padding: 2px 8px;
+      border-radius: 15px;
+      margin-left: 6px;
+      box-shadow: 0 0 6px gold;
+    }
+
+    .card {
+      border-radius: 16px;
+    }
+
+    .btn {
+      font-weight: 600;
+      padding: 10px;
+      border-radius: 10px;
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .btn:hover {
+      transform: scale(1.02);
+    }
+
+    .form-label {
+      font-weight: 500;
+    }
+
+    h1 {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<!-- 🔷 Developer Header -->
+<header class="developer-bar d-flex justify-content-between align-items-center px-4">
+  <div class="d-flex align-items-center">
+    <img src="{{ url_for('static', filename='profile.jpg') }}" alt="Developer Profile Picture" class="rounded-circle me-3" width="40" height="40">
+    <span class="glow-text">Developed by Muhammad Shoaib Tahir</span>
+  </div>
+  <div class="d-flex align-items-center">
+    <a href="mailto:Shoaibtahir410@gmail.com" class="text-white me-3">
+      <i class="fas fa-envelope"></i> Shoaibtahir410@gmail.com
+    </a>
+    <a href="https://github.com/Muhammadshoaibtahir" target="_blank" class="text-white me-3">
+      <i class="fab fa-github"></i> GitHub
+    </a>
+
+    {% if session.get('email') %}
+      <span class="text-white me-2">
+        Welcome, {{ session['email'] }}
+        {% if session.get('premium') %}
+          <span class="premium-badge">🌟 Premium</span>
+        {% endif %}
+      </span>
+      <a href="{{ url_for('logout') }}" class="btn btn-sm btn-outline-light">Logout</a>
+    {% else %}
+      <a href="{{ url_for('login') }}" class="btn btn-sm btn-outline-light me-2">Login</a>
+      <a href="{{ url_for('register') }}" class="btn btn-sm btn-light">Register</a>
+    {% endif %}
+  </div>
+</header>
+
+<!-- 💬 Flash Messages -->
+<main class="container mt-3">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+</main>
+
+<!-- 🧐 NLP Analyzer Form -->
+<section class="container py-5">
+  <h1 class="text-center mb-4 text-primary">🧠 NLP Analyzer</h1>
+  <div class="card shadow p-4">
+    <form action="{{ url_for('analyze') }}" method="post" id="analyze-form">
+      <div class="mb-3">
+        <label for="text" class="form-label">Enter Text:</label>
+        <textarea class="form-control" id="text" name="text" rows="10" placeholder="Paste or type your text here..." required></textarea>
+      </div>
+
+      <div class="d-grid gap-2">
+        <button type="submit" class="btn btn-success">🔍 Analyze</button>
+        {% if session.get('email') %}
+          <button type="submit" formaction="{{ url_for('download', type='csv') }}" class="btn btn-primary" style="display: none;" id="saveBtn">
+            💾 Save Output
+          </button>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- Bootstrap JS Bundle -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Show Save Button After Analyze -->
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const result = sessionStorage.getItem('analysis_done');
+    const saveBtn = document.getElementById('saveBtn');
+
+    if (result === 'true' && saveBtn) {
+      saveBtn.style.display = 'block';
+    }
+
+    if (window.location.pathname === '/analyze') {
+      sessionStorage.setItem('analysis_done', 'true');
+    }
+  });
+</script>
+
+</body>
+</html>
