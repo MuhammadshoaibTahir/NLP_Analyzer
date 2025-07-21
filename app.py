@@ -247,5 +247,6 @@ def visualize():
     return send_file(img, mimetype='image/png')
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Render sets the PORT env variable
-    app.run(host="0.0.0.0", port=port) 
+    from os import environ
+    port = int(environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
