@@ -16,6 +16,10 @@ from sklearn.decomposition import LatentDirichletAllocation
 from sklearn.feature_extraction.text import CountVectorizer
 from spacy import displacy
 import seaborn as sns
+import stanza
+
+# Download Urdu model and save it in the stanza_resources directory
+stanza.download('ur', dir='stanza_resources')
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "your-secret-key")
