@@ -1,10 +1,9 @@
 services:
   - type: web
-    name: your-app-name
+    name: my-app
     env: python
-    buildCommand: "pip install -r requirements.txt && python -m spacy download en_core_web_sm"
-    startCommand: "python app.py"
+    buildCommand: pip install -r requirements.txt
+    startCommand: python app.py
     envVars:
-      - key: PORT
-        value: 10000  # You can omit this, Render will auto-assign
-        gunicorn app:app --bind 0.0.0.0:$PORT
+      - key: PYTHON_VERSION
+        value: 3.10.4
