@@ -1,9 +1,9 @@
 import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file
 from markupsafe import Markup
-from matplotlib import pyplot as plt
 import matplotlib
-matplotlib.use('Agg')  # For thread-safe rendering in Flask
+matplotlib.use('Agg')  # Ensures non-interactive backend for server rendering
+from matplotlib import pyplot as plt
 import spacy
 import stanza
 import re
@@ -16,20 +16,34 @@ from sklearn.decomposition import LatentDirichletAllocation
 from sklearn.feature_extraction.text import CountVectorizer
 from spacy import displacy
 import seaborn as sns
+
 app = Flask(__name__)
-app.secret_key = 'your-secret-key'
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "your-secret-key")
 
-# --- Load NLP Models ---
-nlp_spacy = spacy.load("en_core_web_sm")
-try:
-    stanza.download('en')
-except Exception as e:
-    print(f"Stanza download failed: {e}")
+# --- NLP Model Loaders ---
+def load_spacy_model():
+    try:
+        return spacy.load("en_core_web_sm")
+    except Exception as e:
+        print(f"Failed to load spaCy model: {e}")
+        return None
 
-nlp_stanza = stanza.Pipeline(lang='en', processors='tokenize,pos,constituency')
+def load_stanza_pipeline():
+    try:
+        if not os.path.exists(os.path.join(stanza.download_directory, 'en')):
+            stanza.download('en')
+        return stanza.Pipeline(lang='en', processors='tokenize,pos,constituency')
+    except Exception as e:
+        print(f"Failed to load stanza pipeline: {e}")
+        return None
+
+# Load models
+nlp_spacy = load_spacy_model()
+nlp_stanza = load_stanza_pipeline()
 
 # --- Utility Functions ---
 def clean_text(text):
+    """Lowercase, remove non-word characters."""
     return re.sub(r'\W+', ' ', text.lower())
 
 def extract_keywords(text):
