@@ -79,6 +79,10 @@ def is_valid_license(key):
     }
     return key.strip() in valid_keys
 
+@app.route('/')
+def home():
+    return "It works!"
+
 # --- Routes ---
 @app.route('/')
 def index():
@@ -262,6 +266,5 @@ def visualize():
     return send_file(img, mimetype='image/png')
 
 if __name__ == "__main__":
-    from os import environ
-    port = int(environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    port = int(os.environ.get("PORT", 10000))  # default is 10000 or 5000
+    app.run(host='0.0.0.0', port=port)
