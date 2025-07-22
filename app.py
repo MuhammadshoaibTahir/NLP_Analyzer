@@ -21,6 +21,9 @@ import stanza
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "your-secret-key")
 
+@app.route('/')
+def home():
+    return render_template("index.html") 
 # --- NLP Model Loaders ---
 def load_spacy_model():
     try:
@@ -264,6 +267,7 @@ def visualize():
     fig.savefig(img, format='png')
     img.seek(0)
     return send_file(img, mimetype='image/png')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
