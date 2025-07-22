@@ -265,6 +265,5 @@ def visualize():
     img.seek(0)
     return send_file(img, mimetype='image/png')
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))  # default is 10000 or 5000
-    app.run(host='0.0.0.0', port=port)
+if __name__ == '__main__':
+    app.run(debug=True)
