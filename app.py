@@ -17,19 +17,16 @@ from spacy import displacy
 import seaborn as sns
 import nltk
 
-# 🔁 Download NLTK parser and grammar for light constituency parsing
-try:
-    nltk.download('punkt')
-    nltk.download('averaged_perceptron_tagger')
-    nltk.download('maxent_ne_chunker')
-    nltk.download('words')
-except Exception as e:
-    print("NLTK download failed:", e)
+# 🔁 Download NLTK parser and grammar
+nltk.download('punkt')
+nltk.download('averaged_perceptron_tagger')
+nltk.download('maxent_ne_chunker')
+nltk.download('words')
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "your-secret-key")
 
-# --- NLP Model Loaders ---
+# --- NLP Model ---
 def load_spacy_model():
     try:
         return spacy.load("en_core_web_sm")
@@ -67,11 +64,23 @@ def perform_topic_modeling(text, num_topics=3, num_words=5):
 
 def is_valid_license(key):
     valid_keys = {
-        "MBC6-7JMP-W09O-OH87", "37XG-ZA39-2DK1-1NKG", "DYI3-L6V9-TKIO-OBGI",
-        "49PZ-I8PI-MSG2-XFAK", "PSKL-4FVA-AEVV-9I6S", "I8QT-MNI7-AE4J-JK0V",
-        "3GRR-56KS-O3PL-VMHW", "R4M6-V3JV-EON4-LBEJ", "Y2LX-79OT-XZXS-IC5S",
-        "CILQ-WOAJ-67IC-F7YT", "I7IF-KQ4G-2G1A-MKJ8", "30VV-9JAX-HHH8-4SHM",
-        "MH65-EIOZ-SC1B-TLOX", "AG0N-OCLT-LQ66-ZAF0", "L6UP-W6SA-7BY1-HRFL"
+    "Z7PQ-WN4Y-T8KE-J39M", "B93T-MQ7F-VD8X-R2LO", "QW8C-KPL1-YM7B-A3X9",
+    "F6TJ-XVO2-L1NZ-EU5D", "N43H-2BQL-MAZ7-GYVK", "R8PL-TK92-QYEX-0MDN",
+    "XW1E-JC6Z-89LO-TPFA", "MVGK-LU20-HYX9-E73W", "KJ89-PQTI-XMOL-6W3R",
+    "49ZT-3YFE-KM92-LHTQ", "OVJ1-BGZ8-RN7C-YX2K", "E4LQ-ZKIM-NX92-WJ7B",
+    "7PTW-ME0R-6UJD-AV49", "YQKH-19ZT-RP7E-XGMB", "H7OX-V6YM-8J9N-QDFL",
+    "29KV-DWQL-BOIU-X6RT", "FGMZ-P3HY-JLOX-ND72", "LUI9-XZME-2WKV-BHRQ",
+    "RJQO-A7XN-VIF9-MEKL", "UPF1-92XJ-WMAQ-KVZC", "C7TI-N5OJ-41VX-PZQE",
+    "XZ9H-FB2Y-MQET-KWUL", "D1ZK-RYJ7-BE30-LIVM", "B64M-JOL9-T7XR-EHQK",
+    "V5YJ-K2XE-QBR9-NWOG", "KM7N-XVET-WHR2-A3LU", "TQW2-7KNE-OVXD-FMZI",
+    "OYRE-VP91-XKJT-LMZB", "94WT-KOJ3-HULN-EFZX", "PGJM-W63L-XVQK-YTAO",
+    "J5EX-RBLN-2MTD-KO0C", "L8YW-X4MP-RZGQ-1VFI", "ZEM3-JPF2-6LND-TCQX",
+    "X1KL-UOGV-R3NM-ZBYT", "DOL6-P9XK-KR2W-MJQN", "RW0T-VLNZ-38FJ-YUQI",
+    "AHM8-K3JO-LC9T-XZPN", "KQRN-UMZ5-OV3W-Y1FL", "V9TX-B27W-KJEM-OPZL",
+    "QK2W-MLXR-P6OV-EHBJ", "YUCL-VRJ1-M3K9-ZG8T", "N2RJ-KXY4-LZTM-O3QA",
+    "4LXN-GPRC-0V5E-MUZJ", "EJZP-97MF-OL3K-YQ1N", "MG6T-KPAZ-WJVY-L4CO",
+    "ZH8K-XQTY-FJWL-N3PM", "RWUN-T2VF-MYO9-XK8B", "SMP9-VGJR-KEXY-BT2W",
+    "YBQL-KRZ7-WP1X-MCTU", "KZNM-TGLF-QWOY-9XRB", "VX2J-YU7B-HQPE-L91Z"
     }
     return key.strip() in valid_keys
 
@@ -115,7 +124,7 @@ def logout():
     flash("👋 You have been logged out.", "info")
     return redirect(url_for('index'))
 
-@app.route("/result")
+@app.route('/result')
 def result():
     return render_template("result.html")
 
@@ -166,6 +175,7 @@ def analyze():
             tokens = word_tokenize(text)
             tagged = pos_tag(tokens)
             tree = ne_chunk(tagged)
+            # Render constituency tree as SVG-style plaintext
             cons_tree_html = f"<pre>{str(tree)}</pre>"
         except Exception as e:
             cons_tree_html = f"<pre>Parsing error: {e}</pre>"
