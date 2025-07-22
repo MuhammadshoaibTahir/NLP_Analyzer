@@ -1,21 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>NLP Analyzer</title>
-</head>
-<body>
-    <h1>Welcome to NLP Analyzer</h1>
-    <p>This is the main page!</p>
-    <img src="{{ url_for('static', filename='profile.jpg') }}" alt="Profile Picture">
-</body>
-</html>
-
+  <meta charset="UTF-8">
+  <title>NLP Analyzer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <!-- Bootstrap 5 & Font Awesome -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
 
   <style>
     html {
@@ -39,7 +32,11 @@
     }
 
     .developer-bar img {
+      height: 45px;
+      width: 45px;
+      border-radius: 50%;
       object-fit: cover;
+      margin-right: 12px;
       border: 2px solid #fff;
     }
 
@@ -53,11 +50,6 @@
       color: #ffc107 !important;
     }
 
-    textarea {
-      resize: vertical;
-      font-family: monospace;
-    }
-
     .premium-badge {
       background-color: gold;
       color: #333;
@@ -67,10 +59,6 @@
       border-radius: 15px;
       margin-left: 6px;
       box-shadow: 0 0 6px gold;
-    }
-
-    .card {
-      border-radius: 16px;
     }
 
     .btn {
@@ -88,8 +76,13 @@
       font-weight: 500;
     }
 
-    h1 {
-      font-weight: bold;
+    textarea {
+      resize: vertical;
+      font-family: monospace;
+    }
+
+    .card {
+      border-radius: 16px;
     }
   </style>
 </head>
@@ -138,7 +131,7 @@
   {% endwith %}
 </main>
 
-<!-- 🧐 NLP Analyzer Form -->
+<!-- 🧠 NLP Analyzer Form -->
 <section class="container py-5">
   <h1 class="text-center mb-4 text-primary">🧠 NLP Analyzer</h1>
   <div class="card shadow p-4">

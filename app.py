@@ -2,10 +2,9 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, session, flash, send_file
 from markupsafe import Markup
 import matplotlib
-matplotlib.use('Agg')  # Ensures non-interactive backend for server rendering
+matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 import spacy
-import stanza
 import re
 import io
 import pandas as pd
@@ -16,38 +15,32 @@ from sklearn.decomposition import LatentDirichletAllocation
 from sklearn.feature_extraction.text import CountVectorizer
 from spacy import displacy
 import seaborn as sns
-import stanza
+import nltk
+
+# 🔁 Download NLTK parser and grammar for light constituency parsing
+try:
+    nltk.download('punkt')
+    nltk.download('averaged_perceptron_tagger')
+    nltk.download('maxent_ne_chunker')
+    nltk.download('words')
+except Exception as e:
+    print("NLTK download failed:", e)
 
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "your-secret-key")
 
-@app.route('/')
-def home():
-    return render_template("index.html") 
 # --- NLP Model Loaders ---
 def load_spacy_model():
     try:
         return spacy.load("en_core_web_sm")
     except Exception as e:
-        print(f"Failed to load spaCy model: {e}")
+        print(f"Failed to load spaCy: {e}")
         return None
 
-def load_stanza_pipeline():
-    try:
-        if not os.path.exists(os.path.join(stanza.download_directory, 'en')):
-            stanza.download('en')
-        return stanza.Pipeline(lang='en', processors='tokenize,pos,constituency')
-    except Exception as e:
-        print(f"Failed to load stanza pipeline: {e}")
-        return None
-
-# Load models
 nlp_spacy = load_spacy_model()
-nlp_stanza = load_stanza_pipeline()
 
 # --- Utility Functions ---
 def clean_text(text):
-    """Lowercase, remove non-word characters."""
     return re.sub(r'\W+', ' ', text.lower())
 
 def extract_keywords(text):
@@ -81,10 +74,6 @@ def is_valid_license(key):
         "MH65-EIOZ-SC1B-TLOX", "AG0N-OCLT-LQ66-ZAF0", "L6UP-W6SA-7BY1-HRFL"
     }
     return key.strip() in valid_keys
-
-@app.route('/')
-def home():
-    return "It works!"
 
 # --- Routes ---
 @app.route('/')
@@ -128,16 +117,7 @@ def logout():
 
 @app.route("/result")
 def result():
-    return render_template(
-        "result.html",
-        text=..., token_count=..., type_count=..., ttr=...,
-        pos_labels=..., pos_values=...,
-        entities=..., lemmas=...,
-        dep_tree_html=..., cons_tree_html=...,
-        readability=..., sentiment=...,
-        language=..., premium=...,
-        topics=..., topic_labels=..., topic_strengths=...
-    )
+    return render_template("result.html")
 
 @app.route('/analyze', methods=['POST'])
 def analyze():
@@ -171,9 +151,6 @@ def analyze():
     topic_strengths = []
 
     if premium:
-        readability = {
-        }
-
         blob = TextBlob(text)
         sentiment = {
             'polarity': blob.polarity,
@@ -182,8 +159,16 @@ def analyze():
 
         language = detect(text)
         dep_tree_html = displacy.render(doc, style='dep', page=True)
-        stanza_doc = nlp_stanza(text)
-        cons_tree_html = "".join(f"<pre>{sent.constituency}</pre>" for sent in stanza_doc.sentences)
+
+        try:
+            from nltk import word_tokenize, pos_tag, ne_chunk
+            from nltk.tree import Tree
+            tokens = word_tokenize(text)
+            tagged = pos_tag(tokens)
+            tree = ne_chunk(tagged)
+            cons_tree_html = f"<pre>{str(tree)}</pre>"
+        except Exception as e:
+            cons_tree_html = f"<pre>Parsing error: {e}</pre>"
 
         topics, topic_labels, topic_strengths = perform_topic_modeling(text)
 
